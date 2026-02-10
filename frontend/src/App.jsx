@@ -131,7 +131,7 @@ function App() {
 
   // --- CRITICAL UPDATE: DYNAMIC URL ---
   // This automatically switches between Localhost (for dev) and Render (for production)
-  const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+  const API_URL = 'https://celestic-spacecontrol-backend.onrender.com';
 
   // --- HANDLERS ---
   const handleFileChange = (e) => {
