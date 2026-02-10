@@ -15,6 +15,7 @@ target_packages = [
     "python-dotenv",
     "pillow",  # Often installed as 'Pillow'
     "tensorflow",  # We check this locally, but write 'tensorflow-cpu' for cloud
+    "feedparser",
 ]
 
 print("\nCopy everything below this line into your requirements.txt:\n" + "=" * 50)
