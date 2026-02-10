@@ -129,6 +129,10 @@ function App() {
   const [newsResult, setNewsResult] = useState(null);
   const [loadingNews, setLoadingNews] = useState(false);
 
+  // --- CRITICAL UPDATE: DYNAMIC URL ---
+  // This automatically switches between Localhost (for dev) and Render (for production)
+  const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
   // --- HANDLERS ---
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -160,12 +164,13 @@ function App() {
 
       try {
         setStatus("COMPUTING PHYSICS...");
-        const response = await axios.post('http://127.0.0.1:8000/analyze', formData);
+        // UPDATED: Using API_URL variable
+        const response = await axios.post(`${API_URL}/analyze`, formData);
         setResult(response.data.analysis);
         setStatus("ANALYSIS COMPLETE");
       } catch (error) {
         setStatus("CONNECTION FAILED");
-        console.error(error);
+        console.error("Analyze Error:", error);
       } finally {
         setAnalyzing(false);
       }
@@ -176,11 +181,13 @@ function App() {
     setLoadingNews(true);
     setNewsResult(null);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/news', {
+      // UPDATED: Using API_URL variable
+      const response = await axios.post(`${API_URL}/news`, {
         topic: newsTopic
       });
       setNewsResult(response.data.news);
     } catch (error) {
+      console.error("News Error:", error);
       setNewsResult("ERROR: DATABASE UNREACHABLE.");
     } finally {
       setLoadingNews(false);
