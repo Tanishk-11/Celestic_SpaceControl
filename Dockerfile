@@ -1,26 +1,25 @@
-# 1. Use Python 3.11 (Stable for AI/ML)
-FROM python:3.11-slim
+# 1. Use Python 3.10 Slim (More stable for TensorFlow than 3.11/3.13)
+FROM python:3.10-slim
 
-# 2. Set the folder inside the container
+# 2. Set the working directory
 WORKDIR /app
 
-# 3. CRITICAL: Install system dependencies for Image Processing & AI
-# Without this, TensorFlow/CV will crash with "ImportError: libGL.so.1..."
+# 3. CRITICAL: Install system dependencies for OpenCV/TensorFlow
+# UPDATED: Replaced 'libgl1-mesa-glx' with 'libgl1' and 'libglib2.0-0'
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    libglib2.0-0 \ 
+    libgl1 \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# 4. Copy requirements and install Python libraries
+# 4. Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Copy your entire project code
+# 5. Copy the rest of the code
 COPY . .
 
-# 6. Expose the port (Render uses 10000)
+# 6. Expose the port
 EXPOSE 10000
 
 # 7. Start the server
-# We bind to port 10000 to match Render's default
 CMD ["uvicorn", "backend:app", "--host", "0.0.0.0", "--port", "10000"]
