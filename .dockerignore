@@ -1,0 +1,25 @@
+# --- CRITICAL: SECRETS ---
+# The ** means "look in every subfolder"
+**/.env
+**/.env.*
+
+# --- JUNK FILES ---
+# Ignore pycache in root AND all subfolders
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# --- FRONTEND ---
+frontend/
+frontend/node_modules/
+
+# --- GIT & IDE ---
+.git
+.gitignore
+.vscode/
+.idea/
+
+# --- VIRTUAL ENV ---
+venv/
+env/

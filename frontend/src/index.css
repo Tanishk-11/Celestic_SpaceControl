@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #050505;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Stars */
+.stars {
+  background-image:
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+  background-size: 50px 50px, 100px 100px;
+  background-position: 0 0, 25px 25px;
+  animation: drift 100s linear infinite;
+}
+
+@keyframes drift {
+  from {
+    background-position: 0 0, 25px 25px;
+  }
+
+  to {
+    background-position: 1000px 500px, 1025px 525px;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 2px;
+}
