@@ -23,7 +23,7 @@ class NewsRequest(BaseModel):
 # --- 2. CORS MIDDLEWARE ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Your React App URL
+    allow_origins=["*"],  # Your React App URL
     allow_credentials=True,
     allow_methods=["*"],  # Allow GET, POST, etc.
     allow_headers=["*"],
