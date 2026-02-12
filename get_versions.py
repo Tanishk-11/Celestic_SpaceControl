@@ -16,6 +16,7 @@ target_packages = [
     "pillow",  # Often installed as 'Pillow'
     "tensorflow",  # We check this locally, but write 'tensorflow-cpu' for cloud
     "feedparser",
+    "langchain-groq",
 ]
 
 print("\nCopy everything below this line into your requirements.txt:\n" + "=" * 50)
