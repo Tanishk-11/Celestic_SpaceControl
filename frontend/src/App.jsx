@@ -589,7 +589,7 @@ import {
   Crosshair, MapPin, Info, Zap,
   Camera, X, Aperture,
   Sparkles, HelpCircle, AlertCircle,
-  Menu // Added Menu icon for mobile
+  Menu, RefreshCcw // Added RefreshCcw for Flip Camera
 } from 'lucide-react';
 
 // --- COMPONENT: PARSED MISSION REPORT (ANALYZER) ---
@@ -765,6 +765,7 @@ function App() {
   
   // Camera State
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [facingMode, setFacingMode] = useState('environment'); // Default to rear camera
   const videoRef = useRef(null);
 
   // News State
@@ -776,7 +777,11 @@ function App() {
   const API_URL = 'https://celestic-spacecontrol-backend.onrender.com';
 
   // --- CAMERA HANDLERS ---
-  const startCamera = async () => {
+  const startCamera = async (overrideFacingMode = null) => {
+    // Stop any existing streams first
+    stopCamera();
+
+    const mode = overrideFacingMode || facingMode;
     setIsCameraActive(true);
     setPreview(null);
     setFile(null);
@@ -785,13 +790,16 @@ function App() {
     setStatus("OPTICAL SENSORS ENGAGED");
     
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); // Prefer back camera
+      // Explicitly request the specific camera mode
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: mode } 
+      });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
     } catch (err) {
       console.error("Camera Error:", err);
-      alert("CAMERA ACCESS DENIED OR UNAVAILABLE");
+      alert("CAMERA ACCESS DENIED. CHECK PERMISSIONS.");
       setIsCameraActive(false);
     }
   };
@@ -800,8 +808,15 @@ function App() {
     if (videoRef.current && videoRef.current.srcObject) {
       const tracks = videoRef.current.srcObject.getTracks();
       tracks.forEach(track => track.stop());
+      videoRef.current.srcObject = null;
     }
     setIsCameraActive(false);
+  };
+
+  const toggleCamera = () => {
+    const newMode = facingMode === 'user' ? 'environment' : 'user';
+    setFacingMode(newMode);
+    startCamera(newMode); // Restart with new mode immediately
   };
 
   const captureImage = () => {
@@ -812,6 +827,13 @@ function App() {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
+    
+    // Mirror the image if using front camera for natural feel, otherwise normal
+    if (facingMode === 'user') {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+    
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     canvas.toBlob((blob) => {
@@ -913,7 +935,7 @@ function App() {
         lg:relative lg:translate-x-0 lg:w-64 lg:flex lg:flex-col lg:border-r lg:border-white/10 lg:p-5
         ${isSidebarOpen ? 'translate-x-0 flex flex-col p-5' : '-translate-x-full'}
       `}>
-        {/* Desktop Logo (Hidden on Mobile since it's in the header) */}
+        {/* Desktop Logo */}
         <div className="hidden lg:flex mb-10 items-center gap-3">
           <img 
             src="/Supernova.webp" 
@@ -1018,8 +1040,9 @@ function App() {
                           ref={videoRef} 
                           autoPlay 
                           playsInline 
-                          muted
-                          className="w-full h-full object-cover"
+                          muted // Muted needed for autoplay on some browsers
+                          className="w-full h-full object-cover transform"
+                          style={{ transform: facingMode === 'user' ? 'scaleX(-1)' : 'none' }} // Mirror if selfie
                         />
                         {/* Camera Overlays */}
                         <div className="absolute inset-0 border-[2px] border-white/20 m-4 pointer-events-none">
@@ -1033,16 +1056,26 @@ function App() {
                         </div>
                         
                         {/* Capture Controls */}
-                        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-4 z-20">
+                        <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-8 z-20">
+                           {/* FLIP CAMERA BUTTON */}
+                          <button 
+                             onClick={toggleCamera}
+                             className="p-3 bg-black/50 rounded-full text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
+                             title="Flip Camera"
+                          >
+                            <RefreshCcw className="w-6 h-6" />
+                          </button>
+
                           <button 
                             onClick={captureImage}
                             className="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center hover:scale-110 transition-transform bg-white/10 backdrop-blur-sm"
                           >
                              <div className="w-12 h-12 bg-white rounded-full"></div>
                           </button>
+
                           <button 
                              onClick={stopCamera}
-                             className="absolute right-8 top-2 p-2 bg-black/50 rounded-full text-white hover:bg-red-500/80 transition-colors"
+                             className="p-3 bg-black/50 rounded-full text-white hover:bg-red-500/80 transition-colors backdrop-blur-sm"
                           >
                             <X className="w-6 h-6" />
                           </button>
@@ -1088,7 +1121,7 @@ function App() {
                 {/* --- CONTROLS ROW --- */}
                 <div className="grid grid-cols-2 gap-4">
                   <button 
-                    onClick={startCamera}
+                    onClick={() => startCamera()}
                     disabled={isCameraActive || analyzing}
                     className="py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-inter font-bold text-[10px] lg:text-xs tracking-widest rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
