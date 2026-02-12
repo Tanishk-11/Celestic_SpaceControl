@@ -77,7 +77,7 @@ const ParsedMissionReport = ({ rawText }) => {
 const ParsedNewsReport = ({ rawText }) => {
   // Parsing Logic based on your Agent's Output Format
   // It looks for "**Headlines**:" and "**Did you know?**:"
-  const parts = rawText.split("**Did you know?**:");
+  const parts = rawText.split("**Did you know?**");
   
   const headlinesRaw = parts[0] ? parts[0].replace("**Headlines**:", "").trim() : "No Intelligence Available.";
   const factRaw = parts[1] ? parts[1].trim() : "Archive data corrupted.";

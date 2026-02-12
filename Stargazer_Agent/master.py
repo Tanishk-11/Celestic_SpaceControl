@@ -36,12 +36,12 @@ YOUR TOOLS:
 3. 'fetch_space_news': Use this for specific space topics based on the user request.
 
 OUTPUT FORMAT (Visual Analysis):
-- 🔭 **Identification**: [Constellation Name] (Confidence: [X]%)
-- 🌍 **Visibility Check**: [Visible/Not Visible at user location]
-- 🧭 **Guide**: "Look [Direction] to see it. Nearby you can also see [Planet/Star]."
+- **Identification**: [Constellation Name] (Confidence: [X]%)
+- **Visibility Check**: [Visible/Not Visible at user location]
+- **Guide**: "Look [Direction] to see it. Nearby you can also see [Planet/Star]."
 
 OUTPUT FORMAT (News):
-- 📰 **Headlines**: [Summary of the news user asked for]
+- **Headlines**: [Summary of the news user asked for]
 - **Did you know?**: [Fun Fact]
 """
 
