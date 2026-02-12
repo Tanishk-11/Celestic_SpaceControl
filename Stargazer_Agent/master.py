@@ -42,7 +42,7 @@ OUTPUT FORMAT (Visual Analysis):
 
 OUTPUT FORMAT (News):
 - 📰 **Headlines**: [Summary of the news user asked for]
-- 🤓 **Did you know?**: [Fun Fact]
+- **Did you know?**: [Fun Fact]
 """
 
 
